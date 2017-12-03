@@ -6,8 +6,8 @@
  */
 
 //  The game canvas dimensions.
-exports.width = 1280;
-exports.height = 720;
+exports.width = 320;
+exports.height = 180;
 
 //  Choose the rendering method. Available values are:
 //  * WEBGL: Use WebGL rendering;
@@ -20,7 +20,7 @@ exports.renderer = Phaser.AUTO;
 exports.resolution = 1;
 
 //  Uncomment to disable rendering anti-aliasing. Great for pixel art.
-// exports.antialias = false;
+exports.antialias = false;
 
 //  Uncomment to enable WebGL multi-texture features.
 // exports.multiTexture = true;

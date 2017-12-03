@@ -7,11 +7,13 @@
 'use strict';
 
 function Bullet(game, x, y, xSpeed, ySpeed, range) {
-  Phaser.Sprite.call(this, game, x, y, 'bullet_16x16');
+  Phaser.Sprite.call(this, game, x, y, 'shuriken');
+  this.animations.add('thrown', [0,1,2,3], 5, true);
+  this.animations.play('thrown');
   game.physics.p2.enable(this);
   this.body.fixedRotation = true;
   this.anchor.set(0.5);
-  var baseSpeed = 1000;
+  var baseSpeed = 100;
   this.body.velocity.x = xSpeed * baseSpeed;
   this.body.velocity.y = ySpeed * baseSpeed;
   this.body.mass = 10;

@@ -26,15 +26,16 @@ exports.preload = function (game) {
 
   //  Adjust the scaling mode of the game canvas. Example: If you're developing
   //  a pixel-art game, set it to 'USER_SCALE'.
-  game.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
+  //game.scale.scaleMode = Phaser.ScaleManager.NO_SCALE;
+  game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
 
   //  When using 'USER_SCALE' scaling mode, use this method to adjust the
   //  scaling factor.
-  // game.scale.setUserScale(2);
+  game.scale.setUserScale(4);
 
   //  Uncomment the following line to adjust the rendering of the canvas to
   //  crisp graphics. Great for pixel-art!
-  // Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+  Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
   //  If the game canvas loses focus, keep the game loop running.
   game.stage.disableVisibilityChange = true;
