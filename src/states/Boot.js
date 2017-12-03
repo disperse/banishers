@@ -31,7 +31,7 @@ exports.preload = function (game) {
 
   //  When using 'USER_SCALE' scaling mode, use this method to adjust the
   //  scaling factor.
-  game.scale.setUserScale(4);
+  game.scale.setUserScale(3);
 
   //  Uncomment the following line to adjust the rendering of the canvas to
   //  crisp graphics. Great for pixel-art!

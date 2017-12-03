@@ -1,12 +1,12 @@
 /*
- * Bullet
+ * Shuriken
  * ====
  *
  */
 
 'use strict';
 
-function Bullet(game, x, y, xSpeed, ySpeed, range) {
+function Shuriken(game, x, y, xSpeed, ySpeed, range) {
   Phaser.Sprite.call(this, game, x, y, 'shuriken');
   this.animations.add('thrown', [0,1,2,3], 5, true);
   this.animations.play('thrown');
@@ -17,8 +17,8 @@ function Bullet(game, x, y, xSpeed, ySpeed, range) {
   this.body.velocity.x = xSpeed * baseSpeed;
   this.body.velocity.y = ySpeed * baseSpeed;
   this.body.mass = 10;
-  this.body.setCollisionGroup(game.bulletCollisionGroup);
-  this.body.collides([game.playerCollisionGroup]);
+  this.body.setCollisionGroup(game.shurikenCollisionGroup);
+  this.body.collides([game.playerCollisionGroup, game.wallCollisionGroup, game.enemyCollisionGroup]);
   this.body.collideWorldBounds = true;
   this.lastX = x;
   this.lastY = y;
@@ -26,11 +26,19 @@ function Bullet(game, x, y, xSpeed, ySpeed, range) {
   this.range = range;
   this.maxLife = 600;
   this.age = 0;
-}
-Bullet.prototype = Object.create(Phaser.Sprite.prototype);
-module.exports = Bullet.prototype.constructor = Bullet;
 
-Bullet.prototype.update = function () {
+  this.body.onBeginContact.add(shurikenTouch, this);
+}
+
+function shurikenTouch(body, bodyB, shapeA, shapeB, equation) {
+  this.animations.stop('thrown');
+  this.body.removeFromWorld();
+}
+
+Shuriken.prototype = Object.create(Phaser.Sprite.prototype);
+module.exports = Shuriken.prototype.constructor = Shuriken;
+
+Shuriken.prototype.update = function () {
   this.age++;
   this.distanceTravelled += Math.sqrt(Math.pow((this.x - this.lastX), 2) + Math.pow((this.y - this.lastY), 2));
   this.lastX = this.x;

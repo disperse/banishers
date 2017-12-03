@@ -6,7 +6,7 @@
 
 'use strict';
 
-var Bullet = require('../objects/Bullet');
+var Shuriken = require('../objects/Shuriken');
 
 function Player(game, x, y, sprite, Keymap, gamepad) {
   Phaser.Sprite.call(this, game, x, y, sprite);
@@ -15,7 +15,7 @@ function Player(game, x, y, sprite, Keymap, gamepad) {
   this.body.mass = 50;
   this.body.setRectangle(8, 14, 2, 2);
   this.body.setCollisionGroup(game.playerCollisionGroup);
-  this.body.collides([game.bulletCollisionGroup, game.playerCollisionGroup, game.screenBorderCollisionGroup]);
+  this.body.collides([game.shurikenCollisionGroup, game.playerCollisionGroup, game.screenBorderCollisionGroup, game.wallCollisionGroup, game.enemyCollisionGroup]);
   this.body.collideWorldBounds = true;
   this.game = game;
   this.faceRight = true;
@@ -34,13 +34,47 @@ function Player(game, x, y, sprite, Keymap, gamepad) {
   this.accelleration = 7;
   this.decelleration = 4;
   this.maxSpeed = 125;
+  this.hitPoints = 3;
+  this.invincibilityTime = 90;
+  this.invincible = false;
+  this.timeSinceInvincible = this.invincibilityTime;
+
+  this.body.onBeginContact.add(playerTouch, this);
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 module.exports = Player.prototype.constructor = Player;
 
+Player.prototype.takeDamage = function () {
+  if (!this.invincible) {
+    this.timeSinceInvincible = 0;
+    this.invincible = true;
+    this.hitPoints --;
+    this.alpha = 0.2;
+    if (this.hitPoints < 1) {
+      this.destroy();
+    }
+  }
+};
+
+function playerTouch(body) {
+  if (!this.invincible && body !== null && body.sprite !== null && (body.sprite.key === 'shuriken' || body.sprite.key === 'enemy')) {
+    this.takeDamage();
+  }
+}
+
 Player.prototype.update = function () {
   this.timeSinceLastFire++;
   this.timeSinceLastDash++;
+  this.timeSinceInvincible++;
+
+  if (this.invincible && this.timeSinceInvincible > this.invincibilityTime) {
+    this.invincible = false;
+    this.alpha = 1;
+  }
+
+  if (this.invincible && (this.timeSinceInvincible % 10 === 0)) {
+    this.alpha = (this.alpha === 1) ? 0.2 : 1;
+  }
 
   var xDir = 0;
   var yDir = 0;
@@ -151,12 +185,12 @@ function move(player, xDir, yDir) {
 function fire(player, x, y, xSpeed, ySpeed) {
   if (player.timeSinceLastFire > player.rateOfFire) {
     var xStart = x;
-    if (xSpeed !== 0) xStart += ((xSpeed > 0) ? 7 : -7);
+    if (xSpeed !== 0) xStart += ((xSpeed > 0) ? 10 : -10);
     var yStart = y;
-    if (ySpeed !==0) yStart += ((ySpeed > 0) ? 12 : -12);
+    if (ySpeed !==0) yStart += ((ySpeed > 0) ? 15 : -15);
 
-    var bullet = new Bullet(player.game, xStart, yStart, xSpeed, ySpeed, player.range);
-    player.game.add.existing(bullet);
+    var shuriken = new Shuriken(player.game, xStart, yStart, xSpeed, ySpeed, player.range);
+    player.game.shurikenGroup.add(shuriken);
     player.timeSinceLastFire = 0;
   }
 }

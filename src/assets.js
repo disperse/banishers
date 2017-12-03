@@ -60,6 +60,14 @@ exports.gameAssets = [
     frameHeight: 7
   },
   {
+    key: 'wall',
+    type: 'spritesheet',
+    url: 'wall_spritesheet.png',
+    frameMax: 3,
+    frameWidth: 5,
+    frameHeight: 5
+  },
+  {
     key: 'enemy',
     type: 'image'
   },
@@ -76,6 +84,10 @@ exports.gameAssets = [
     type: 'image'
   },
   {
+    key: 'status_bar',
+    type: 'image'
+  },
+  {
     key: 'bullet_16x16',
     type: 'image'
   },
@@ -83,6 +95,12 @@ exports.gameAssets = [
     key: 'videogamesong1',
     type: 'audio',
     urls: ['videogamesong1.ogg', 'videogamesong1.mp3'],
+    autoDecode: true
+  },
+  {
+    key: 'endgamesong',
+    type: 'audio',
+    urls: ['endgamesong.ogg', 'endgamesong.mp3'],
     autoDecode: true
   }
   ];

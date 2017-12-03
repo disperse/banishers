@@ -6,7 +6,7 @@
 
 'use strict';
 
-function ScreenBorder(game, x, y, width, height, depth) {
+function ScreenBorder(game, x, y, width, height, depth, statusBarWidth) {
   Phaser.Sprite.call(this, game, x, y, null);
   game.physics.p2.enable(this);
   this.body.fixedRotation = true;
@@ -20,8 +20,8 @@ function ScreenBorder(game, x, y, width, height, depth) {
       [x,y],
       [x+width,y],
       [x+width,y+depth],
-      [x+depth,y+depth],
-      [x+depth,y+height-depth],
+      [x+depth+statusBarWidth,y+depth],
+      [x+depth+statusBarWidth,y+height-depth],
       [x+width-depth,y+height-depth],
       [x+width-depth,y+depth+1],
       [x+width,y+depth+1],
@@ -29,7 +29,7 @@ function ScreenBorder(game, x, y, width, height, depth) {
       [x,y+height],
       [x,y]
     ]);
-  // this.body.debug = true;
+  this.body.debug = true;
   //this.anchor.set(0.5);
   this.body.mass = 1;
   this.body.setCollisionGroup(game.screenBorderCollisionGroup);
