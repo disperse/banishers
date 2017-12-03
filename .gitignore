@@ -5,6 +5,8 @@ Thumbs.db
 dist/
 build/
 node_modules/
+raw_assets
+music
 
 !.git*
 !.babelrc

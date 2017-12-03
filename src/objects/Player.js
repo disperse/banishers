@@ -14,7 +14,7 @@ function Player(game, x, y, sprite, Keymap, gamepad) {
   this.body.fixedRotation = true;
   this.body.mass = 100;
   this.body.setCollisionGroup(game.playerCollisionGroup);
-  this.body.collides([game.bulletCollisionGroup, game.playerCollisionGroup]);
+  this.body.collides([game.bulletCollisionGroup, game.playerCollisionGroup, game.screenBorderCollisionGroup]);
   this.body.collideWorldBounds = true;
   this.game = game;
   this.gamepad = gamepad;

@@ -34,5 +34,11 @@ exports.gameAssets = [
   {
     key: 'bullet_16x16',
     type: 'image'
+  },
+  {
+    key: 'videogamesong1',
+    type: 'audio',
+    urls: ['videogamesong1.ogg', 'videogamesong1.mp3'],
+    autoDecode: true
   }
   ];
