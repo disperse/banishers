@@ -23,8 +23,8 @@ exports.create = function (game) {
   this.worldWidth = Config.width * 2;
   this.worldHeight = Config.width * 2;
   this.wave = 0;
-  //this.waveEnemies = [3, 7, 10, 15, 20];
-  this.waveEnemies = [1, 1, 1, 1, 1];
+  this.waveEnemies = [3, 7, 10, 15, 20];
+  //this.waveEnemies = [1, 1, 1, 1, 1];
   this.waveMusic = ['videogamesong1', 'videogamesong2', 'videogamesong3', 'videogamesong4', 'videogamesong5'];
   this.game.enemyCount = this.waveEnemies[this.wave];
 
@@ -79,13 +79,15 @@ exports.create = function (game) {
 
   var padding = 30;
   game.screenBorder = new ScreenBorder(game, 0, 0, Config.width + padding, Config.height + padding, padding, statusBarWidth);
-  this.game.player1 = new Player(game, cx - 30, cy, 0, Keymap.PLAYER1, pad1);
-  this.game.player2 = new Player(game, cx + 30, cy, 1, Keymap.PLAYER2, pad2);
-  var statusBar = new StatusBar(game);
 
   this.game.shurikenGroup = game.add.group();
   this.game.playerGroup = game.add.group();
   this.game.statusBarGroup = game.add.group();
+  this.game.heartsGroup = game.add.group();
+
+  var statusBar = new StatusBar(this.game, this.game.heartsGroup);
+  this.game.player1 = new Player(game, cx - 30, cy, 1, Keymap.PLAYER1, pad1, statusBar, true);
+  this.game.player2 = new Player(game, cx + 30, cy, 0, Keymap.PLAYER2, pad2, statusBar, false);
 
   this.game.playerGroup.add(this.game.player1);
   this.game.playerGroup.add(this.game.player2);

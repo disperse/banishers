@@ -93,6 +93,13 @@ exports.gameAssets = [
     frameHeight: 34
   },
   {
+    key: 'hearts',
+    type: 'spritesheet',
+    frameMax: 3,
+    frameWidth: 10,
+    frameHeight: 10
+  },
+  {
     key: 'enemy',
     type: 'image'
   },

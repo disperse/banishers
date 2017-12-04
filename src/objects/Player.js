@@ -9,7 +9,7 @@
 var Shuriken = require('../objects/Shuriken');
 var Smoke = require('../objects/Smoke');
 
-function Player(game, x, y, spriteFrame, Keymap, gamepad) {
+function Player(game, x, y, spriteFrame, Keymap, gamepad, statusBar, playerOne) {
   Phaser.Sprite.call(this, game, x, y, 'player');
   this.frame = spriteFrame;
   this.spriteFrame = spriteFrame;
@@ -23,6 +23,8 @@ function Player(game, x, y, spriteFrame, Keymap, gamepad) {
   this.game = game;
   this.faceRight = false;
   this.gamepad = gamepad;
+  this.statusBar = statusBar;
+  this.playerOne = playerOne;
   this.dashing = false;
   this.dashSpeed = 400;
   this.dashDirection = [0,0];
@@ -56,10 +58,11 @@ Player.prototype = Object.create(Phaser.Sprite.prototype);
 module.exports = Player.prototype.constructor = Player;
 
 Player.prototype.takeDamage = function () {
-  if (!this.invincible) {
+  if (!this.invincible && !this.dead) {
     this.timeSinceInvincible = 0;
     this.invincible = true;
     this.hitPoints --;
+    this.statusBar.playerHitPoints(this.playerOne, this.hitPoints);
     this.playerSounds.playerHurt.play();
     this.alpha = 0.2;
     if (this.hitPoints < 1) {
@@ -91,6 +94,7 @@ Player.prototype.update = function () {
     if (this.deadTime < 0) {
       this.dead = false;
       this.hitPoints = this.maxHitPoints;
+      this.statusBar.playerHitPoints(this.playerOne, this.hitPoints);
       this.frame = this.spriteFrame;
       //this.body.addToWorld();
     } else {
