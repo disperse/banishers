@@ -22,19 +22,25 @@ exports.create = function (game) {
   var cy = game.world.centerY;
   this.worldWidth = Config.width * 2;
   this.worldHeight = Config.width * 2;
-
-  var music = game.add.audio('endgamesong');
-  music.loopFull();
+  this.wave = 0;
+  //this.waveEnemies = [3, 7, 10, 15, 20];
+  this.waveEnemies = [1, 1, 1, 1, 1];
+  this.waveMusic = ['videogamesong1', 'videogamesong2', 'videogamesong3', 'videogamesong4', 'videogamesong5'];
+  this.game.enemyCount = this.waveEnemies[this.wave];
 
   game.add.tileSprite(statusBarWidth, 0, this.worldWidth - statusBarWidth, this.worldHeight, 'floor');
 
   for (var tx = statusBarWidth; tx < this.worldWidth; tx += 50) {
     for (var ty = 0; ty < this.worldHeight; ty += 50) {
       if (Math.random() < 0.3) {
-        if (Math.random() < 0.5) {
+        if (Math.random() < 0.1) {
           game.add.sprite(tx, ty, 'floor_cracked');
         } else {
-          game.add.sprite(tx, ty, 'floor_gem');
+          if (Math.random() < 0.4) {
+            game.add.sprite(tx, ty, 'floor_gem');
+          } else {
+            game.add.sprite(tx, ty, 'tile_pattern');
+          }
         }
       }
     }
@@ -53,16 +59,16 @@ exports.create = function (game) {
 
   // Top and bottom wall
   for (var wx = statusBarWidth; wx < this.worldWidth; wx += 5) {
-    var topWall = new Wall(game, wx, 2);
-    var bottomWall = new Wall(game, wx, this.worldHeight - 5);
+    var topWall = new Wall(game, wx, 2, true);
+    var bottomWall = new Wall(game, wx, this.worldHeight - 5, true);
     game.add.existing(topWall);
     game.add.existing(bottomWall);
   }
 
   // Left and right wall
   for (var wy = 6; wy < this.worldHeight - 6; wy += 5) {
-    var leftWall = new Wall(game, statusBarWidth + 3, wy);
-    var rightWall = new Wall(game, this.worldWidth, wy);
+    var leftWall = new Wall(game, statusBarWidth + 3, wy, false);
+    var rightWall = new Wall(game, this.worldWidth, wy, false);
     game.add.existing(leftWall);
     game.add.existing(rightWall);
   }
@@ -72,37 +78,80 @@ exports.create = function (game) {
   var pad2 = game.input.gamepad.pad2;
 
   var padding = 30;
-  game.screenBorder = new ScreenBorder(game, 0, 0, Config.width, Config.height, padding, statusBarWidth);
-  var player1 = new Player(game, cx - 30, cy, 'green_ninja', Keymap.PLAYER1, pad1);
-  var player2 = new Player(game, cx + 30, cy, 'blue_ninja', Keymap.PLAYER2, pad2);
-  var enemy = new Enemy(game, cx + 30, cy + 30, 'enemy', [player1, player2]);
+  game.screenBorder = new ScreenBorder(game, 0, 0, Config.width + padding, Config.height + padding, padding, statusBarWidth);
+  this.game.player1 = new Player(game, cx - 30, cy, 0, Keymap.PLAYER1, pad1);
+  this.game.player2 = new Player(game, cx + 30, cy, 1, Keymap.PLAYER2, pad2);
   var statusBar = new StatusBar(game);
 
   this.game.shurikenGroup = game.add.group();
   this.game.playerGroup = game.add.group();
   this.game.statusBarGroup = game.add.group();
 
-  this.game.playerGroup.add(player1);
-  this.game.playerGroup.add(player2);
+  this.game.playerGroup.add(this.game.player1);
+  this.game.playerGroup.add(this.game.player2);
   this.game.playerGroup.add(game.screenBorder);
-  this.game.playerGroup.add(enemy);
   this.game.statusBarGroup.add(statusBar);
 
   game.camera.width = Config.width - statusBarWidth;
   game.camera.x -= statusBarWidth;
   game.camera.follow(game.screenBorder, Phaser.Camera.FOLLOW_LOCKON, 1.0, 1.0);
 
+  this.game.music = game.add.audio(this.waveMusic[this.wave]);
+  this.game.music.loopFull();
+  spawnEnemies(this, this.waveEnemies[this.wave]);
   //player1.body.collides(game.shurikenCollisionGroup, assignDamage, this);
   //player2.body.collides(game.shurikenCollisionGroup, assignDamage, this);
 
   game.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+
 };
 
 exports.update = function() {
+  if (this.game.enemyCount === 0) {
+    if (this.wave === 4) {
+      this.game.music.stop();
 
+      this.game.state.start('End');
+      //var endgamesong = this.game.add.audio('endgamesong');
+      //endgamesong.loopFull();
+    } else {
+      this.wave++;
+      spawnEnemies(this, this.waveEnemies[this.wave]);
+      this.game.enemyCount = this.waveEnemies[this.wave];
+      this.game.music.stop();
+      this.game.music = this.game.add.audio(this.waveMusic[this.wave]);
+      this.game.music.loopFull();
+    }
+  }
 };
 
 exports.render = function() {
   //this.game.debug.text(this.game.time.suggestedFps, 32, 32);
 };
+
+
+function spawnEnemies(_this, n) {
+  for (var i = 0; i < n; i++) {
+    // 0-0.25: top, 0.25 - 0.5: right, 0.5 - 0.75: bottom, 0.75 - 1.0: left
+    var wall = Math.random();
+    var x = 0;
+    var y = 0;
+    if (wall < 0.25) { // top
+      x = (Math.random() * (_this.worldWidth - 94)) + 64;
+      y = 30;
+    } else if (wall < 0.5) { // right
+      y = Math.random() * (_this.worldHeight - 60);
+      x = _this.worldWidth - 30;
+    } else if (wall < 0.75) { // bottom
+      x = (Math.random() * (_this.worldWidth - 94)) + 64;
+      y = _this.worldHeight - 30;
+    } else { //left
+      y = Math.random() * (_this.worldHeight - 60);
+      x = 94;
+    }
+    var enemy = new Enemy(_this.game, x, y, 'enemy', [_this.game.player1, _this.game.player2]);
+    _this.game.playerGroup.add(enemy);
+  }
+}
 

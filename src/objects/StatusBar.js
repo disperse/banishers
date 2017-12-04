@@ -8,7 +8,6 @@
 
 function StatusBar(game) {
   Phaser.Sprite.call(this, game, 0, 0, 'status_bar');
-  console.log('StatusBar', this);
   this.fixedToCamera = true;
 }
 

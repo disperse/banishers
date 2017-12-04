@@ -7,9 +7,12 @@
 'use strict';
 
 var Shuriken = require('../objects/Shuriken');
+var Smoke = require('../objects/Smoke');
 
-function Player(game, x, y, sprite, Keymap, gamepad) {
-  Phaser.Sprite.call(this, game, x, y, sprite);
+function Player(game, x, y, spriteFrame, Keymap, gamepad) {
+  Phaser.Sprite.call(this, game, x, y, 'player');
+  this.frame = spriteFrame;
+  this.spriteFrame = spriteFrame;
   game.physics.p2.enable(this);
   this.body.fixedRotation = true;
   this.body.mass = 50;
@@ -18,7 +21,7 @@ function Player(game, x, y, sprite, Keymap, gamepad) {
   this.body.collides([game.shurikenCollisionGroup, game.playerCollisionGroup, game.screenBorderCollisionGroup, game.wallCollisionGroup, game.enemyCollisionGroup]);
   this.body.collideWorldBounds = true;
   this.game = game;
-  this.faceRight = true;
+  this.faceRight = false;
   this.gamepad = gamepad;
   this.dashing = false;
   this.dashSpeed = 400;
@@ -34,10 +37,18 @@ function Player(game, x, y, sprite, Keymap, gamepad) {
   this.accelleration = 7;
   this.decelleration = 4;
   this.maxSpeed = 125;
-  this.hitPoints = 3;
+  this.maxHitPoints = 5;
+  this.hitPoints = this.maxHitPoints;
   this.invincibilityTime = 90;
   this.invincible = false;
   this.timeSinceInvincible = this.invincibilityTime;
+  this.dead = false;
+  this.deadTime = 0;
+  this.playerSounds = {};
+  this.playerSounds.playerHurt = game.add.audio('player_hurt');
+  this.playerSounds.dash = game.add.audio('dash');
+  this.playerSounds.throw = game.add.audio('throw');
+  this.playerSounds.death = game.add.audio('player_death');
 
   this.body.onBeginContact.add(playerTouch, this);
 }
@@ -49,9 +60,18 @@ Player.prototype.takeDamage = function () {
     this.timeSinceInvincible = 0;
     this.invincible = true;
     this.hitPoints --;
+    this.playerSounds.playerHurt.play();
     this.alpha = 0.2;
     if (this.hitPoints < 1) {
-      this.destroy();
+      this.dead = true;
+      this.playerSounds.death.play();
+      if (this.faceRight) {
+        this.faceRight = false;
+        this.scale.x *= -1;
+      }
+      //this.body.removeFromWorld();
+      this.frame = 2;
+      this.deadTime = 300;
     }
   }
 };
@@ -66,6 +86,19 @@ Player.prototype.update = function () {
   this.timeSinceLastFire++;
   this.timeSinceLastDash++;
   this.timeSinceInvincible++;
+
+  if (this.dead) {
+    if (this.deadTime < 0) {
+      this.dead = false;
+      this.hitPoints = this.maxHitPoints;
+      this.frame = this.spriteFrame;
+      //this.body.addToWorld();
+    } else {
+      // [green, blue, 5, 4, 3, 2, 1]
+      this.frame = 6 - Math.floor(this.deadTime/60);
+      this.deadTime--;
+    }
+  }
 
   if (this.invincible && this.timeSinceInvincible > this.invincibilityTime) {
     this.invincible = false;
@@ -110,10 +143,12 @@ Player.prototype.update = function () {
       !this.dashing &&
       this.timeSinceLastDash > this.rateOfDash) {
     this.dashing = true;
+    this.playerSounds.dash.play();
+
+    var smoke = new Smoke(this.game, this.x - 12, this.y - 20);
+    this.game.add.existing(smoke);
 
     this.timeSinceLastDash = 0;
-    console.log('this.game.world.getLocalBounds');
-    console.log(this.game.world.getLocalBounds());
     this.dashDirection = [xDir, yDir];
   }
 
@@ -124,18 +159,21 @@ Player.prototype.update = function () {
     this.timeSinceLastDash = 0;
   }
 
-  if (xFireDir !== 0 || yFireDir !== 0) {
+  if (!this.dead && (xFireDir !== 0 || yFireDir !== 0)) {
     fire(this, this.x, this.y, xFireDir, yFireDir);
   }
 
-  move(this, xDir, yDir);
-  if (xDir < 0 && !this.faceRight) {
-    this.scale.x *= -1;
-    this.faceRight = true;
-  }
-  if (xDir > 0 && this.faceRight) {
-    this.scale.x *= -1;
-    this.faceRight = false;
+  if (! this.dead) {
+    move(this, xDir, yDir);
+
+    if (xDir < 0 && this.faceRight) {
+      this.scale.x *= -1;
+      this.faceRight = false;
+    }
+    if (xDir > 0 && !this.faceRight) {
+      this.scale.x *= -1;
+      this.faceRight = true;
+    }
   }
 };
 
@@ -189,6 +227,7 @@ function fire(player, x, y, xSpeed, ySpeed) {
     var yStart = y;
     if (ySpeed !==0) yStart += ((ySpeed > 0) ? 15 : -15);
 
+    player.playerSounds.throw.play();
     var shuriken = new Shuriken(player.game, xStart, yStart, xSpeed, ySpeed, player.range);
     player.game.shurikenGroup.add(shuriken);
     player.timeSinceLastFire = 0;

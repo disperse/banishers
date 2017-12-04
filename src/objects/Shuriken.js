@@ -13,10 +13,10 @@ function Shuriken(game, x, y, xSpeed, ySpeed, range) {
   game.physics.p2.enable(this);
   this.body.fixedRotation = true;
   this.anchor.set(0.5);
-  var baseSpeed = 100;
+  var baseSpeed = 200;
   this.body.velocity.x = xSpeed * baseSpeed;
   this.body.velocity.y = ySpeed * baseSpeed;
-  this.body.mass = 10;
+  this.body.mass = 50;
   this.body.setCollisionGroup(game.shurikenCollisionGroup);
   this.body.collides([game.playerCollisionGroup, game.wallCollisionGroup, game.enemyCollisionGroup]);
   this.body.collideWorldBounds = true;

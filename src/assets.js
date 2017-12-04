@@ -20,6 +20,10 @@ exports.preloaderAssets = [{
 //  -- General assets used throughout the game.
 exports.gameAssets = [
   {
+    key: 'SHURIKA',
+    type: 'image'
+  },
+  {
     key: 'player1',
     type: 'image'
   },
@@ -68,11 +72,36 @@ exports.gameAssets = [
     frameHeight: 5
   },
   {
+    key: '54321',
+    type: 'spritesheet',
+    frameMax: 5,
+    frameWidth: 14,
+    frameHeight: 20
+  },
+  {
+    key: 'player',
+    type: 'spritesheet',
+    frameMax: 7,
+    frameWidth: 14,
+    frameHeight: 20
+  },
+  {
+    key: 'smoke',
+    type: 'spritesheet',
+    frameMax: 11,
+    frameWidth: 34,
+    frameHeight: 34
+  },
+  {
     key: 'enemy',
     type: 'image'
   },
   {
     key: 'floor',
+    type: 'image'
+  },
+  {
+    key: 'tile_pattern',
     type: 'image'
   },
   {
@@ -92,9 +121,37 @@ exports.gameAssets = [
     type: 'image'
   },
   {
+    key: 'enemy_pieces',
+    type: 'image'
+  },
+  {
     key: 'videogamesong1',
     type: 'audio',
     urls: ['videogamesong1.ogg', 'videogamesong1.mp3'],
+    autoDecode: true
+  },
+  {
+    key: 'videogamesong2',
+    type: 'audio',
+    urls: ['videogamesong2.ogg', 'videogamesong2.mp3'],
+    autoDecode: true
+  },
+  {
+    key: 'videogamesong3',
+    type: 'audio',
+    urls: ['videogamesong3.ogg', 'videogamesong3.mp3'],
+    autoDecode: true
+  },
+  {
+    key: 'videogamesong4',
+    type: 'audio',
+    urls: ['videogamesong4.ogg', 'videogamesong4.mp3'],
+    autoDecode: true
+  },
+  {
+    key: 'videogamesong5',
+    type: 'audio',
+    urls: ['videogamesong5.ogg', 'videogamesong5.mp3'],
     autoDecode: true
   },
   {
@@ -102,5 +159,35 @@ exports.gameAssets = [
     type: 'audio',
     urls: ['endgamesong.ogg', 'endgamesong.mp3'],
     autoDecode: true
+  },
+  {
+    key: 'throw',
+    type: 'audio',
+    urls: ['throw.wav']
+  },
+  {
+    key: 'dash',
+    type: 'audio',
+    urls: ['dash.wav']
+  },
+  {
+    key: 'player_hurt',
+    type: 'audio',
+    urls: ['player_hurt.wav']
+  },
+  {
+    key: 'enemy_hurt',
+    type: 'audio',
+    urls: ['enemy_hurt.wav']
+  },
+  {
+    key: 'enemy_death',
+    type: 'audio',
+    urls: ['enemy_death.wav']
+  },
+  {
+    key: 'player_death',
+    type: 'audio',
+    urls: ['player_death.wav']
   }
-  ];
+];

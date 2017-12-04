@@ -7,6 +7,7 @@
 'use strict';
 
 var Shuriken = require('../objects/Shuriken');
+var Pieces = require('../objects/Pieces');
 
 function Enemy(game, x, y, sprite, targets) {
   Phaser.Sprite.call(this, game, x, y, sprite);
@@ -15,7 +16,7 @@ function Enemy(game, x, y, sprite, targets) {
   this.body.mass = 50;
   this.body.setRectangle(8, 14, 2, 2);
   this.body.setCollisionGroup(game.enemyCollisionGroup);
-  this.body.collides([game.shurikenCollisionGroup, game.playerCollisionGroup, game.wallCollisionGroup]);
+  this.body.collides([game.shurikenCollisionGroup, game.playerCollisionGroup, game.wallCollisionGroup, game.enemyCollisionGroup]);
   this.body.collideWorldBounds = true;
   this.game = game;
   this.faceRight = true;
@@ -23,14 +24,18 @@ function Enemy(game, x, y, sprite, targets) {
   this.range = 100;
   this.rateOfFire = 20;
   this.timeSinceLastFire = this.rateOfFire;
-  this.accelleration = 7;
+  this.accelleration = 4;
   this.decelleration = 4;
-  this.maxSpeed = 125;
+  this.maxSpeed = 60;
   this.hitPoints = 3;
-  this.invincibilityTime = 30;
+  this.invincibilityTime = 0;
   this.invincible = false;
   this.timeSinceInvincible = this.invincibilityTime;
   this.targets = targets;
+
+  this.enemySounds = {};
+  this.enemySounds.enemyHurt = game.add.audio('enemy_hurt');
+  this.enemySounds.death = game.add.audio('enemy_death');
 
   this.body.onBeginContact.add(enemyTouch, this);
 }
@@ -42,8 +47,13 @@ Enemy.prototype.takeDamage = function () {
     this.timeSinceInvincible = 0;
     this.invincible = true;
     this.hitPoints --;
+    this.enemySounds.enemyHurt.play();
     this.alpha = 0.2;
     if (this.hitPoints < 1) {
+      this.enemySounds.death.play();
+      this.game.enemyCount--;
+      var pieces = new Pieces(this.game, this.x - 12, this.y - 20);
+      this.game.shurikenGroup.add(pieces);
       this.destroy();
     }
   }
@@ -65,11 +75,15 @@ Enemy.prototype.update = function () {
 
   var target = null;
   var targetDistance = 10000;
-  for (var i = 1; i < this.targets.length; i++) {
-    var newTargetDistance = distanceToTarget(this, this.targets[i]);
-    if (newTargetDistance < targetDistance) {
-      target = this.targets[i];
-      targetDistance = newTargetDistance;
+  for (var i = 0; i < this.targets.length; i++) {
+    if (!this.targets[i].dead) {
+      var newTargetDistance = distanceToTarget(this, this.targets[i]);
+      //console.log('newTargetDistance', newTargetDistance);
+      //console.log('targetDistance', targetDistance);
+      if (target === null || newTargetDistance < targetDistance) {
+        target = this.targets[i];
+        targetDistance = newTargetDistance;
+      }
     }
   }
 
@@ -86,6 +100,13 @@ Enemy.prototype.update = function () {
   var yDir = 0;
   var xFireDir = 0;
   var yFireDir = 0;
+
+  if (target !== null) {
+    var xDiff = this.x - target.x;
+    var yDiff = this.y - target.y;
+    xDir = (xDiff < 0) ? Math.abs(xDiff/yDiff) : -1 * Math.abs(xDiff/yDiff);
+    yDir = (yDiff < 0) ? Math.abs(1/xDir) : -1 * Math.abs(1/xDir);
+  }
 
   if (xFireDir !== 0 || yFireDir !== 0) {
     fire(this, this.x, this.y, xFireDir, yFireDir);

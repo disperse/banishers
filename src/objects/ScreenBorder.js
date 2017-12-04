@@ -29,7 +29,7 @@ function ScreenBorder(game, x, y, width, height, depth, statusBarWidth) {
       [x,y+height],
       [x,y]
     ]);
-  this.body.debug = true;
+  //this.body.debug = true;
   //this.anchor.set(0.5);
   this.body.mass = 1;
   this.body.setCollisionGroup(game.screenBorderCollisionGroup);
