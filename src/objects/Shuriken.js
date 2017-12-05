@@ -65,8 +65,10 @@ function star(shuriken) {
   shuriken.body.velocity.y = 0;
   for (var x = -1; x < 2; x++) {
     for (var y = -1; y < 2; y++) {
-      var s = new Shuriken(shuriken.player.game, shuriken.x, shuriken.y, x, y, shuriken.player.range, shuriken.player, shuriken.boomerang, false, shuriken.explodes);
-      shuriken.player.game.shurikenGroup.add(s);
+      if (x !== 0 || y !== 0) {
+        var s = new Shuriken(shuriken.player.game, shuriken.x, shuriken.y, x, y, shuriken.player.range, shuriken.player, shuriken.boomerang, false, shuriken.explodes);
+        shuriken.player.game.shurikenGroup.add(s);
+      }
     }
   }
 }
@@ -79,8 +81,8 @@ Shuriken.prototype.update = function () {
   }
   this.lastX = this.x;
   this.lastY = this.y;
-  if (this.isStar) this.starCountDown--;
-  if (this.isStar && this.starCountDown < 0) this.visible = false;
+  //if (this.isStar) this.starCountDown--;
+  //if (this.isStar && this.starCountDown < 0) this.visible = false;
   if (this.age > this.maxLife) {
     this.destroy();
   } else {
