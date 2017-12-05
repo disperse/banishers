@@ -42,17 +42,18 @@ function Enemy(game, x, y, sprite, targets) {
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
 module.exports = Enemy.prototype.constructor = Enemy;
 
-Enemy.prototype.takeDamage = function () {
+Enemy.prototype.takeDamage = function (damage) {
+  console.log('damage', damage);
   if (!this.invincible) {
     this.timeSinceInvincible = 0;
     this.invincible = true;
-    this.hitPoints --;
+    this.hitPoints -= damage;
     this.enemySounds.enemyHurt.play();
     this.alpha = 0.2;
     if (this.hitPoints < 1) {
       this.enemySounds.death.play();
       this.game.enemyCount--;
-      var pieces = new Pieces(this.game, this.x - 12, this.y - 20);
+      var pieces = new Pieces(this.game, this.x, this.y - 10);
       this.game.shurikenGroup.add(pieces);
       this.destroy();
     }
@@ -61,7 +62,8 @@ Enemy.prototype.takeDamage = function () {
 
 function enemyTouch(body) {
   if (!this.invincible && body !== null && body.sprite !== null && body.sprite.key === 'shuriken') {
-    this.takeDamage();
+    var damage = (body.sprite.explodes) ? 3 : 1;
+    this.takeDamage(damage);
   }
 }
 

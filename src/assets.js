@@ -93,6 +93,13 @@ exports.gameAssets = [
     frameHeight: 34
   },
   {
+    key: 'explosion',
+    type: 'spritesheet',
+    frameMax: 11,
+    frameWidth: 10,
+    frameHeight: 10
+  },
+  {
     key: 'hearts',
     type: 'spritesheet',
     frameMax: 3,
@@ -196,5 +203,10 @@ exports.gameAssets = [
     key: 'player_death',
     type: 'audio',
     urls: ['player_death.wav']
+  },
+  {
+    key: 'explosion',
+    type: 'audio',
+    urls: ['explosion.wav']
   }
 ];

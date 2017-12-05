@@ -7,7 +7,7 @@ exports.PLAYER1 = {
   FIRE_DOWN : Phaser.KeyCode.G,
   FIRE_LEFT : Phaser.KeyCode.F,
   FIRE_RIGHT : Phaser.KeyCode.H,
-  DASH : Phaser.KeyCode.E
+  DASH : Phaser.KeyCode.R
 };
 
 exports.PLAYER2 = {
@@ -19,5 +19,5 @@ exports.PLAYER2 = {
   FIRE_DOWN : Phaser.KeyCode.DOWN,
   FIRE_LEFT : Phaser.KeyCode.LEFT,
   FIRE_RIGHT : Phaser.KeyCode.RIGHT,
-  DASH : Phaser.KeyCode.O
+  DASH : Phaser.KeyCode.SHIFT
 };

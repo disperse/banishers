@@ -52,16 +52,20 @@ function Player(game, x, y, spriteFrame, Keymap, gamepad, statusBar, playerOne) 
   this.playerSounds.throw = game.add.audio('throw');
   this.playerSounds.death = game.add.audio('player_death');
 
+  this.boomerangShurikens = false;
+  this.starShurikens = false;
+  this.explodingShurikens = false;
+
   this.body.onBeginContact.add(playerTouch, this);
 }
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 module.exports = Player.prototype.constructor = Player;
 
-Player.prototype.takeDamage = function () {
+Player.prototype.takeDamage = function (damage) {
   if (!this.invincible && !this.dead) {
     this.timeSinceInvincible = 0;
     this.invincible = true;
-    this.hitPoints --;
+    this.hitPoints -= damage;
     this.statusBar.playerHitPoints(this.playerOne, this.hitPoints);
     this.playerSounds.playerHurt.play();
     this.alpha = 0.2;
@@ -81,7 +85,11 @@ Player.prototype.takeDamage = function () {
 
 function playerTouch(body) {
   if (!this.invincible && body !== null && body.sprite !== null && (body.sprite.key === 'shuriken' || body.sprite.key === 'enemy')) {
-    this.takeDamage();
+    if (body.sprite.key === 'shuriken') {
+      this.takeDamage(body.sprite.damage);
+    } else {
+      this.takeDamage(1);
+    }
   }
 }
 
@@ -232,7 +240,7 @@ function fire(player, x, y, xSpeed, ySpeed) {
     if (ySpeed !==0) yStart += ((ySpeed > 0) ? 15 : -15);
 
     player.playerSounds.throw.play();
-    var shuriken = new Shuriken(player.game, xStart, yStart, xSpeed, ySpeed, player.range);
+    var shuriken = new Shuriken(player.game, xStart, yStart, xSpeed, ySpeed, player.range, player, player.boomerangShurikens, player.starShurikens, player.explodingShurikens);
     player.game.shurikenGroup.add(shuriken);
     player.timeSinceLastFire = 0;
   }

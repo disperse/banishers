@@ -1,21 +1,32 @@
-# [banishers](https://example.com/my-game/)
+# [SHURIKA!](http://dispersemedia.com/shurika/)
 
 ---
 
-Congrats! To manage your project and start developing your new game right away,
-the following npm scripts are available:
+SHURIKA is the game that separates those who shuri-can from those who shuri-can't.
 
->   TIP: You can also use Gulp to manage development tasks.
+Best bros GREEN NINJA and BLUE NINJA fight against those evil ROBIN controlled by SAMUR A.I.
 
-The following npm scripts are also available:
+After defeating each wave, our heroes LEVEL UP. But wait, who thought that *boomerang shurikans* were a good idea?
 
-```sh
-npm start         # Or `gulp`: launches the project development environment.
-npm run dist      # Or `gulp dist`: Prepares the game for distribution.
-npm run lint      # Or `gulp lint`: Checks scripts for linting issues.
-npm run clean     # Or `gulp clean`: Deletes build files.
-npm run test-dist # Build and run your project
+Defeat 5 waves of enemies and get to the SHURICOPTER to escape!!!
+
+####CONTROLS 
+
+```text
+BLUE NINJA                          GREEN NINJA 
+                   XBox 360
+Keyboard          Controller         Keyboard
+--Move--           --Move--          --Move-- 
+   W              Left Stick            I
+ A S D                                J K L
+ 
+--Fire--           --Fire--          --Fire--
+   T              Right Stick           ↑
+ F G H                                ← ↓ →
+ 
+--Dash--           --Dash--          --Dash--
+  Move               Move              Move
+   +                  +                 +
+   R                  A               Shift
 ```
 
-Should you consider distributing your game as an open source project, please
-choose and [include a LICENSE file](http://choosealicense.com/) for your project.

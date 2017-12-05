@@ -16,6 +16,7 @@ var Wall = require('../objects/Wall');
 var Enemy = require('../objects/Enemy');
 
 exports.create = function (game) {
+  game.input.keyboard.addKeyCapture([32,37,38,39,40]);
   this.game = game;
   var statusBarWidth = 64;
   var cx = ((game.world.width - statusBarWidth) / 2) + statusBarWidth;
@@ -119,6 +120,18 @@ exports.update = function() {
       //endgamesong.loopFull();
     } else {
       this.wave++;
+      if (this.wave > 0) {
+        this.game.player1.boomerangShurikens = true;
+        this.game.player2.boomerangShurikens = true;
+      }
+      if (this.wave > 1) {
+        this.game.player1.starShurikens = true;
+        this.game.player2.starShurikens = true;
+      }
+      if (this.wave > 2) {
+        this.game.player1.explodingShurikens = true;
+        this.game.player2.explodingShurikens = true;
+      }
       spawnEnemies(this, this.waveEnemies[this.wave]);
       this.game.enemyCount = this.waveEnemies[this.wave];
       this.game.music.stop();
